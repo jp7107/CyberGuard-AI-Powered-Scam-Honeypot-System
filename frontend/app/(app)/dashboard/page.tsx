@@ -3,11 +3,13 @@
 
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Shield, MessageSquare, Database, Activity } from "lucide-react"
+import { Shield, MessageSquare, Database, Activity, Loader2 } from "lucide-react"
 import { DashboardCharts } from "@/components/dashboard-charts"
 import { getDashboardStats } from "@/lib/api"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function DashboardPage() {
+    const [isLoading, setIsLoading] = useState(true)
     const [stats, setStats] = useState({
         totalMessages: 0,
         scamsDetected: 0,
@@ -22,26 +24,32 @@ export default function DashboardPage() {
 
     useEffect(() => {
         const fetchStats = async () => {
-            const data = await getDashboardStats()
-            if (data) {
-                const extractionData = [
-                    { name: "Bank Accts", value: data.bankAccountsExtracted || 0 },
-                    { name: "UPI IDs", value: data.upiIdsExtracted || 0 },
-                    { name: "URLs", value: data.phishingLinksExtracted || 0 },
-                    { name: "Phones", value: data.phoneNumbersExtracted || 0 },
-                ]
+            try {
+                const data = await getDashboardStats()
+                if (data) {
+                    const extractionData = [
+                        { name: "Bank Accts", value: data.bankAccountsExtracted || 0 },
+                        { name: "UPI IDs", value: data.upiIdsExtracted || 0 },
+                        { name: "URLs", value: data.phishingLinksExtracted || 0 },
+                        { name: "Phones", value: data.phoneNumbersExtracted || 0 },
+                    ]
 
-                setStats({
-                    totalMessages: data.totalMessages || 0,
-                    scamsDetected: data.scamsDetected || 0,
-                    bankAccountsExtracted: data.bankAccountsExtracted || 0,
-                    upiIdsExtracted: data.upiIdsExtracted || 0,
-                    phishingLinksExtracted: data.phishingLinksExtracted || 0,
-                    phoneNumbersExtracted: data.phoneNumbersExtracted || 0,
-                    activityData: data.activityData || [],
-                    extractionData,
-                    recentActivity: data.recentActivity || []
-                })
+                    setStats({
+                        totalMessages: data.totalMessages || 0,
+                        scamsDetected: data.scamsDetected || 0,
+                        bankAccountsExtracted: data.bankAccountsExtracted || 0,
+                        upiIdsExtracted: data.upiIdsExtracted || 0,
+                        phishingLinksExtracted: data.phishingLinksExtracted || 0,
+                        phoneNumbersExtracted: data.phoneNumbersExtracted || 0,
+                        activityData: data.activityData || [],
+                        extractionData,
+                        recentActivity: data.recentActivity || []
+                    })
+                }
+            } catch (error) {
+                console.error("Fetch stats failed", error)
+            } finally {
+                setIsLoading(false)
             }
         }
 
@@ -55,8 +63,40 @@ export default function DashboardPage() {
         ? ((stats.scamsDetected / stats.totalMessages) * 100).toFixed(1)
         : "0.0"
 
+    // Loading Skeleton View
+    if (isLoading) {
+        return (
+            <div className="flex flex-col gap-4 p-4">
+                <div className="flex items-center gap-2">
+                    <Skeleton className="h-8 w-48 bg-white/10" />
+                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {[...Array(6)].map((_, i) => (
+                        <Card key={i} className="bg-card/50 backdrop-blur-sm border-white/5">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <Skeleton className="h-4 w-24 bg-white/10" />
+                                <Skeleton className="h-4 w-4 rounded-full bg-white/10" />
+                            </CardHeader>
+                            <CardContent>
+                                <Skeleton className="h-8 w-16 mb-2 bg-white/10" />
+                                <Skeleton className="h-3 w-32 bg-white/10" />
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                    <Skeleton className="col-span-4 h-[350px] bg-white/5 rounded-xl" />
+                    <Skeleton className="col-span-3 h-[350px] bg-white/5 rounded-xl" />
+                </div>
+            </div>
+        )
+    }
+
     return (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="flex flex-col gap-4 p-4 animate-in fade-in duration-500">
             <h2 className="text-3xl font-bold tracking-tight glow-text">Command Center</h2>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -183,3 +223,4 @@ export default function DashboardPage() {
         </div>
     )
 }
+
