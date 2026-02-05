@@ -37,19 +37,19 @@ class ScamMessageRequest(BaseModel):
     metadata: Optional[Metadata] = None
 
 # Response Models
-class AgentResponse(BaseModel):
-    status: str = "success"
-    reply: str
-    riskScore: float = 0.0
-    scamDetected: bool = False
-    extractedIntelligence: Optional[IntelligenceData] = None
-    
 class IntelligenceData(BaseModel):
     bankAccounts: List[str] = []
     upiIds: List[str] = []
     phishingLinks: List[str] = []
     phoneNumbers: List[str] = []
     suspiciousKeywords: List[str] = []
+
+class AgentResponse(BaseModel):
+    status: str = "success"
+    reply: str
+    riskScore: float = 0.0
+    scamDetected: bool = False
+    extractedIntelligence: Optional[IntelligenceData] = None
 
 class FinalCallbackPayload(BaseModel):
     sessionId: str
