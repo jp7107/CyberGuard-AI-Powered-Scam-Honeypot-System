@@ -74,22 +74,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Analysis">
-              <a href="/analysis">
-                <ShieldAlert />
-                <span>Risk Analysis</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Intelligence">
-              <a href="/intelligence">
-                <Database />
-                <span>Intelligence DB</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+
         </SidebarMenu>
         <SidebarSeparator className="mx-2 my-2 bg-white/5" />
         <SidebarMenu>

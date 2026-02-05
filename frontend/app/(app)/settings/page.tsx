@@ -13,7 +13,7 @@ export default function SettingsPage() {
                 </CardHeader>
                 <CardContent>
                     <p className="text-muted-foreground text-sm mb-4">Configure how the autonomous agent behaves during engagement.</p>
-                    <Button variant="outline">Edit Persona Prompts</Button>
+                    <Button variant="outline">Edit Persona Prompts <span className="ml-2 text-xs text-muted-foreground">(ongoing)</span></Button>
                 </CardContent>
             </Card>
         </div>
